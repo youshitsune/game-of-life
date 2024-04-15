@@ -23,14 +23,10 @@ SOFTWARE.
 */
 #include <iostream>
 #include <raylib.h>
-#include "csv.hpp"
+#include <fstream>
 #include "config.h"
 
-#define SIZE 20
-#define W 500
-
 using namespace std;
-using namespace csv;
 
 void print(int m[SIZE][SIZE]){
     cout << "\n\n";
@@ -70,22 +66,30 @@ void update(int m[SIZE][SIZE]){
 }
 
 int main(){
-    CSVFormat format;
-    format.delimiter(',').no_header();
+    string a[SIZE];
     int m[SIZE][SIZE];
-
-    CSVReader reader("starter", format);
-    int i = 0;
-    int j = 0;
-    for (CSVRow &row: reader){
-        for (CSVField &field: row){
-            m[i][j] = stoi(field.get<>());
-            j++;   
-        }
-        i++;
-        j=0;
+    ifstream file;
+    file.open("starter");
+    int index;
+    for (int i = 0; i < SIZE; i++){
+        file >> a[i];
     }
-
+    for (int i = 0; i < SIZE; i++){
+        index = 0;
+        for (int j = 0; j < a[i].size(); j++){
+            if (a[i][j] == ',') continue;
+            else{
+                if (a[i][j] == '0'){
+                    m[i][index] = 0;
+                }
+                else if (a[i][j] == '1'){
+                    m[i][index] = 1;
+                }
+            }
+            index++;
+        }
+    }
+    file.close();
 
     SetTargetFPS(10);
     InitWindow(W, W, "Conway's Game of Life");
