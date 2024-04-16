@@ -22,19 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #include <iostream>
-#include <raylib.h>
+#include "raylib.h"
 #include <fstream>
 #include "config.h"
+#include <cmath>
 
 using namespace std;
 
-void print(int m[SIZE][SIZE]){
-    cout << "\n\n";
+void empty(int m[SIZE][SIZE]){
     for (int i = 0; i < SIZE; i++){
         for (int j = 0; j < SIZE; j++){
-            cout << m[i][j] << " ";
+            m[i][j] = 0;
         }
-        cout << '\n';
     }
 }
 
@@ -66,34 +65,22 @@ void update(int m[SIZE][SIZE]){
 }
 
 int main(){
-    string a[SIZE];
     int m[SIZE][SIZE];
-    ifstream file;
-    file.open("starter");
-    int index;
-    for (int i = 0; i < SIZE; i++){
-        file >> a[i];
-    }
-    for (int i = 0; i < SIZE; i++){
-        index = 0;
-        for (int j = 0; j < a[i].size(); j++){
-            if (a[i][j] == ',') continue;
-            else{
-                if (a[i][j] == '0'){
-                    m[i][index] = 0;
-                }
-                else if (a[i][j] == '1'){
-                    m[i][index] = 1;
-                }
-            }
-            index++;
-        }
-    }
-    file.close();
-
+    empty(m);
+    bool run = false;
     SetTargetFPS(10);
     InitWindow(W, W, "Conway's Game of Life");
+    int x, y;
     while (!WindowShouldClose()){
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
+            x = (int)ceil(GetMouseX()/(W/SIZE));
+            y = (int)ceil(GetMouseY()/(W/SIZE));
+            if (m[x][y] == 1) m[x][y] = 0;
+            else if (m[x][y] == 0) m[x][y] = 1;
+        }
+        if (IsKeyPressed(KEY_SPACE)) run = !run;
+        if (IsKeyPressed(KEY_R)) empty(m);
+
         BeginDrawing();
         ClearBackground(GetColor(0x181818AA));
         for (int i = 0; i < SIZE; i++){
@@ -104,6 +91,8 @@ int main(){
             }
         }
         EndDrawing();
-        update(m);
+        if (run){
+            update(m);
+        }
     }
 }
