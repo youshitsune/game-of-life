@@ -83,6 +83,10 @@ int main(){
 
         BeginDrawing();
         ClearBackground(GetColor(0x181818AA));
+        for (int i = 0; i < W; i+=(W/SIZE)){
+            DrawLine(i, 0, i, W, WHITE);
+            DrawLine(0, i, W, i, WHITE);
+        }
         for (int i = 0; i < SIZE; i++){
             for (int j = 0; j < SIZE; j++){
                 if (m[i][j] == 1){
